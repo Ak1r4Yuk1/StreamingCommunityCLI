@@ -34,6 +34,7 @@ def estrai_url_playlist(url_pagina):
         def handle_response(response):
             url = response.url
             if pattern.match(url):
+                print(url)
                 choise = input("Download or Play? D/P: ")
                 if choise == ("P" or "p"):
                     print("Stream trovato! Sto aprendo MPV per riprodurlo")

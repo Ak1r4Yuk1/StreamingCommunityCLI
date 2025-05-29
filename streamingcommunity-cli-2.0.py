@@ -30,13 +30,13 @@ CREATE TABLE titoli (
 
 ricerca = inquirer.text(message="Inserisci il titolo da cercare:").execute()
 os.system("cls")
-search_title = f'https://streamingcommunity.spa/api/search?q={ricerca}'
+search_title = f'https://streamingunity.to/api/search?q={ricerca}'
 
 try:
     r = requests.get(search_title)
     data = r.json()
 except Exception as e:
-    print(f"{Fore.RED}Errore durante la richiesta:{Style.BRIGHT} {e}")
+    print(f"{Fore.RED}Errore durante la richiesta: Prova ad attivare la VPN in un paese fuori dall'Italia")
     sys.exit(1)
 
 # Inserimento e visualizzazione titoli
@@ -70,29 +70,30 @@ stagione_sel = inquirer.select(
 
 os.system("cls")
 
-stagione_link = f"https://streamingcommunity.spa/titles/{id_sel}-{slug_sel}/stagione-{stagione_sel}"
+stagione_link = f"https://streamingunity.to/it/titles/{id_sel}-{slug_sel}/season-{stagione_sel}"
 print(f"{Fore.CYAN}Link alla stagione selezionata:{Style.BRIGHT} {stagione_link}\n")
 
 headers = {
-    "accept": "text/html, application/xhtml+xml",
-    "accept-language": "it,it-IT;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-    "cache-control": "no-cache",
-    "content-type": "application/json",
-    "pragma": "no-cache",
-    "priority": "u=1, i",
-    "referer": f"{stagione_link}",
-    "sec-ch-ua": '"Microsoft Edge";v="135", "Not-A.Brand";v="8", "Chromium";v="135"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
-    "x-inertia": "true",
-    "x-inertia-partial-component": "Titles/Title",
-    "x-inertia-partial-data": "loadedSeason,flash",
-    "x-inertia-version": "34e749948a3ffe5dc16e5cdc6929bf26",
-    "x-requested-with": "XMLHttpRequest"
+    'accept': 'text/html, application/xhtml+xml',
+    'accept-language': 'it,it-IT;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+    'cache-control': 'no-cache',
+    'content-type': 'application/json',
+    'pragma': 'no-cache',
+    'priority': 'u=1, i',
+    'referer': f'{stagione_link}',
+    'sec-ch-ua': '"Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0',
+    'x-inertia': 'true',
+    'x-inertia-partial-component': 'Titles/Title',
+    'x-inertia-partial-data': 'loadedSeason,flash',
+    'x-inertia-version': '51bcd00e70993d1c875cf45033ddaad0',
+    'x-requested-with': 'XMLHttpRequest',
+    'x-xsrf-token': 'eyJpdiI6IjFMYmh1dUgvUENtSjJGRm81aGdUM2c9PSIsInZhbHVlIjoiZW52YTBZZVQyWXFJVXVVdm94dXVTeVlpUGlTSUlTRkkwQjc2UDJEdnpOMVZhN3lkR2FtT0Q0RW85YmR5OUdqc0IyUHB1blExMEdadkNoWFRKRFM4SnlLd1A3aXF0UmN2RjB1NGlQcllVSlBDcjBQMlhFU0hMYlc0QWE5aTVYcTEiLCJtYWMiOiJjNTQ2N2UyNzk0YWY3YzUxMzA2MGVjMmJkOTRlZDNkY2Y0NjQ4NDEzMjc4ZDY0Mzc2NGQ0ZGUwOTcwNTc3Mzg4IiwidGFnIjoiIn0%3D'
 }
 
 try:
@@ -120,7 +121,7 @@ url_episodio = None
 for ep in episodi:
     if ep["number"] == numero_ep:
         ep_id = ep["id"]
-        url_episodio = f"https://streamingcommunity.spa/watch/{titolo_id}?e={ep_id}"
+        url_episodio = f"https://streamingunity.to/it/watch/{titolo_id}?e={ep_id}"
         break
 
 if url_episodio:
