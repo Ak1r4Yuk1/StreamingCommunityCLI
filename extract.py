@@ -2,6 +2,8 @@ from playwright.sync_api import sync_playwright
 import re
 import os
 import sys
+import shlex
+import tempfile
 
 class DevNull:
     def write(self,msg):
@@ -34,34 +36,59 @@ def estrai_url_playlist(url_pagina):
         def handle_response(response):
             url = response.url
             if pattern.match(url):
-                print(url)
-                choise = input("Download or Play? D/P: ")
-                if choise == ("P" or "p"):
-                    print("Stream trovato! Sto aprendo MPV per riprodurlo")
-                    os.system(f"mpv --user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0\" \"{url}\" --no-terminal")
-                elif choise == ("D" or "d"):
-                    os.system(f"yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0\" --fragment-retries infinite --concurrent-fragments 5 \"{url}\" -o {nome_file}.mp4")
+                print(f"\nTrovato stream: {url}")
+                choice = input("Download or Play? D/P: ").strip().lower()
+
+                # Estrazione link video/audio
+                video_url = os.popen(f"curl -s {shlex.quote(url)} | awk '/1080/{{getline; print}}'").read().strip()
+                audio_url = os.popen(f"curl -s {shlex.quote(url)} | grep 'type=audio' | grep 'ita' | sed 's/.*URI=\"\\(https[^\\\"]*\\)\".*/\\1/'").read().strip()
+
+                print(f"\n🎞️  Video: {video_url}")
+                print(f"🎧  Audio: {audio_url}")
+
+                if not video_url or not audio_url:
+                    print("❌ Impossibile trovare le URL audio/video dal manifest.")
+                    return
+
+                if choice == "d":
+                    nome_file = input("Nome file da salvare: ").strip()
+                    print("📥 Download avviato con yt-dlp...")
+                    os.system(
+                        f"yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 "
+                        f"--user-agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        f"AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36' "
+                        f"--fragment-retries infinite --concurrent-fragments 5 "
+                        f"'{url}' -o '{nome_file}.mp4'"
+                    )
                 else:
-                    print("Stream trovato! Sto aprendo MPV per riprodurlo")
-                    os.system(f"mpv --user-agent=\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0\" \"{url}\" --no-terminal")
+                    print("🎬 Stream trovato! Avvio MPV con audio italiano...")
+
+                    cmd = (
+                        f"mpv {shlex.quote(video_url)} --external-file={shlex.quote(audio_url)} "
+                        f"--aid=1 "  # forza la prima traccia audio come default
+                        f"--user-agent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                        f"(KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36' "
+                        f"--referrer='https://streamingcommunityz.si' "
+                        f"--http-header-fields='Origin: https://streamingcommunityz.si' "
+                        f"--no-cache --demuxer-lavf-hacks=no --no-terminal"
+                    )
+
+                    os.system(cmd)
+
         page.on("response", handle_response)
 
         page.goto(url_pagina)
         # Simula clic per avviare il video
-        page.mouse.click(500, 500)
-        page.wait_for_load_state('networkidle')
-        page.mouse.click(500, 500)
-        page.wait_for_load_state('networkidle')
-        page.mouse.click(500, 500)
+        for _ in range(3):
+            page.mouse.click(500, 500)
+            page.wait_for_load_state('networkidle')
 
-        # Attendi per assicurarti che tutte le richieste siano intercettate
         page.wait_for_load_state('networkidle')
-
         browser.close()
+
 
 # Esempio di utilizzo
 url_video = sys.argv[1]
-#  4615e27256
-nome_file = url_video.replace("https://streamingcommunityz.si/watch/","").replace("?", "").replace("=","")
+nome_file = url_video.replace("https://streamingcommunityz.si/watch/","").replace("?","").replace("=","")
 print("Attendi qualche secondo, sto estraendo lo stream..")
 estrai_url_playlist(url_video)
