@@ -62,6 +62,6 @@ def estrai_url_playlist(url_pagina):
 # Esempio di utilizzo
 url_video = sys.argv[1]
 #  4615e27256
-nome_file = url_video.replace("https://streamingcommunity.spa/watch/","").replace("?", "").replace("=","")
+nome_file = url_video.replace("https://streamingcommunityz.si/watch/","").replace("?", "").replace("=","")
 print("Attendi qualche secondo, sto estraendo lo stream..")
 estrai_url_playlist(url_video)

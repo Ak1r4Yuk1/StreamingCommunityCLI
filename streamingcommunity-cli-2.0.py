@@ -13,7 +13,7 @@ class DevNull:
 sys.stderr = DevNull()
 
 
-os.system("cls")
+os.system("clear")
 init(autoreset=True)
 
 conn = sqlite3.connect(':memory:')
@@ -29,8 +29,8 @@ CREATE TABLE titoli (
 ''')
 
 ricerca = inquirer.text(message="Inserisci il titolo da cercare:").execute()
-os.system("cls")
-search_title = f'https://streamingunity.to/api/search?q={ricerca}'
+os.system("clear")
+search_title = f'https://streamingcommunityz.si/api/search?q={ricerca}'
 
 try:
     r = requests.get(search_title)
@@ -52,7 +52,7 @@ conn.commit()
 # Selezione titolo
 scelta_titolo = inquirer.select(message="Scegli un titolo:", choices=scelte).execute()
 id_titolo = scelta_titolo.split(" - ")[0]
-os.system("cls")
+os.system("clear")
 cursor.execute('SELECT id, name, slug, seasons_count FROM titoli WHERE id = ?', (id_titolo,))
 titolo = cursor.fetchone()
 
@@ -68,34 +68,30 @@ stagione_sel = inquirer.select(
     choices=[str(i + 1) for i in range(stagioni_sel)]
 ).execute()
 
-os.system("cls")
+os.system("clear")
 
-stagione_link = f"https://streamingunity.to/it/titles/{id_sel}-{slug_sel}/season-{stagione_sel}"
+stagione_link = f"https://streamingcommunityz.si/it/titles/{id_sel}-{slug_sel}/season-{stagione_sel}"
 print(f"{Fore.CYAN}Link alla stagione selezionata:{Style.BRIGHT} {stagione_link}\n")
 
 headers = {
-    'accept': 'text/html, application/xhtml+xml',
-    'accept-language': 'it,it-IT;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-    'cache-control': 'no-cache',
-    'content-type': 'application/json',
-    'pragma': 'no-cache',
-    'priority': 'u=1, i',
-    'referer': f'{stagione_link}',
-    'sec-ch-ua': '"Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-origin',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0',
-    'x-inertia': 'true',
-    'x-inertia-partial-component': 'Titles/Title',
-    'x-inertia-partial-data': 'loadedSeason,flash',
-    'x-inertia-version': '51bcd00e70993d1c875cf45033ddaad0',
-    'x-requested-with': 'XMLHttpRequest',
-    'x-xsrf-token': 'eyJpdiI6IjFMYmh1dUgvUENtSjJGRm81aGdUM2c9PSIsInZhbHVlIjoiZW52YTBZZVQyWXFJVXVVdm94dXVTeVlpUGlTSUlTRkkwQjc2UDJEdnpOMVZhN3lkR2FtT0Q0RW85YmR5OUdqc0IyUHB1blExMEdadkNoWFRKRFM4SnlLd1A3aXF0UmN2RjB1NGlQcllVSlBDcjBQMlhFU0hMYlc0QWE5aTVYcTEiLCJtYWMiOiJjNTQ2N2UyNzk0YWY3YzUxMzA2MGVjMmJkOTRlZDNkY2Y0NjQ4NDEzMjc4ZDY0Mzc2NGQ0ZGUwOTcwNTc3Mzg4IiwidGFnIjoiIn0%3D'
+    "accept": "text/html, application/xhtml+xml",
+    "accept-language": "it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7",
+    "content-type": "application/json",
+    "priority": "u=1, i",
+    "referer": f"{stagione_link}",
+    "sec-ch-ua": '"Chromium";v="141", "Not?A_Brand";v="8"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Linux"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    "x-inertia": "true",
+    "x-inertia-partial-component": "Titles/Title",
+    "x-inertia-partial-data": "loadedSeason,flash",
+    "x-inertia-version": "39d95fb5633a2bf327c6d55fa0c62025",
+    "x-requested-with": "XMLHttpRequest"
 }
-
 try:
     r = requests.get(stagione_link, headers=headers)
     season_data = r.json()
@@ -121,7 +117,7 @@ url_episodio = None
 for ep in episodi:
     if ep["number"] == numero_ep:
         ep_id = ep["id"]
-        url_episodio = f"https://streamingunity.to/it/watch/{titolo_id}?e={ep_id}"
+        url_episodio = f"https://streamingcommunityz.si/it/watch/{titolo_id}?e={ep_id}"
         break
 
 if url_episodio:
